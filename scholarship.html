@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarFind – Discover Scholarships</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #f5f3ee;
+      --surface: #ffffff;
+      --primary: #1a3a2a;
+      --accent: #d4a843;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --border: #e0dcd4;
+      --card-hover: #f0ede6;
+      --danger: #c0392b;
+      --success: #1a6b3a;
+      --tag-bg: #e8f0eb;
+      --tag-text: #1a3a2a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: var(--primary);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: #ffffffcc;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    .nav-cta {
+      background: var(--accent);
+      color: var(--primary) !important;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 600 !important;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--primary);
+      color: #fff;
+      padding: 80px 2rem 100px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.15;
+      max-width: 700px;
+      margin: 0 auto 1rem;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero p {
+      color: #ffffffaa;
+      font-size: 17px;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+
+    .hero-search {
+      display: flex;
+      max-width: 540px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    }
+
+    .hero-search input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .hero-search button {
+      background: var(--accent);
+      border: none;
+      padding: 14px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--primary);
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .hero-search button:hover { opacity: 0.85; }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .stat { text-align: center; }
+    .stat-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--accent); }
+    .stat-label { font-size: 13px; color: #ffffffaa; }
+
+    /* ── MAIN LAYOUT ── */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ── FILTER SIDEBAR ── */
+    .filters {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: sticky;
+      top: 80px;
+    }
+
+    .filters h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-group { margin-bottom: 1.5rem; }
+
+    .filter-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .filter-group select,
+    .filter-group input[type="text"] {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus { border-color: var(--primary); }
+
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text);
+      text-transform: none;
+      letter-spacing: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-group input[type="checkbox"] { accent-color: var(--primary); width: 15px; height: 15px; }
+
+    .filter-btn {
+      width: 100%;
+      padding: 10px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .filter-btn:hover { opacity: 0.85; }
+
+    .reset-btn {
+      width: 100%;
+      padding: 9px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .reset-btn:hover { background: var(--bg); }
+
+    /* ── SCHOLARSHIP CARDS ── */
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .results-header h2 { font-size: 18px; font-weight: 600; }
+    .results-count { font-size: 14px; color: var(--muted); }
+
+    .sort-select {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      background: var(--card-hover);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-org {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+
+    .badge-open { background: #e8f5ec; color: #1a6b3a; }
+    .badge-closing { background: #fef3e2; color: #854f0b; }
+    .badge-closed { background: #fceaea; color: #c0392b; }
+
+    .card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .card-amount {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--primary);
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-weight: 500;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+
+    .card-deadline { font-size: 12px; color: var(--muted); }
+    .card-deadline strong { color: var(--text); }
+
+    .card-apply {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .card-apply:hover { opacity: 0.85; }
+
+    /* ── APPLICATION FORM SECTION ── */
+    .form-section {
+      background: var(--primary);
+      padding: 5rem 2rem;
+      margin-top: 2rem;
+    }
+
+    .form-inner {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .form-inner h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-inner > p {
+      color: #ffffffaa;
+      margin-bottom: 2rem;
+      font-size: 15px;
+    }
+
+    .form-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-field.full { grid-column: 1 / -1; }
+
+    .form-field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus { border-color: var(--primary); background: #fff; }
+
+    .form-field textarea { resize: vertical; min-height: 100px; }
+
+    .form-divider {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 1.5rem 0 1rem;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--tag-bg);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .submit-btn:hover { opacity: 0.85; }
+
+    .form-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+
+    #form-success {
+      display: none;
+      background: #e8f5ec;
+      border: 1px solid #a8d5b5;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      color: var(--success);
+      font-weight: 500;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    #form-error {
+      display: none;
+      background: #fceaea;
+      border: 1px solid #f5b5b5;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      color: var(--danger);
+      font-weight: 500;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0f2419;
+      color: #ffffffaa;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    footer .logo { font-size: 20px; margin-bottom: 1rem; display: block; }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      list-style: none;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a { font-size: 14px; color: #ffffffaa; transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+
+    footer p { font-size: 13px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .main { grid-template-columns: 1fr; }
+      .filters { position: static; }
+    }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+      .hero { padding: 60px 1.25rem 80px; }
+      .hero-stats { gap: 1.5rem; }
+      .main { padding: 2rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">Scholar<span>Find</span></div>
+    <ul class="nav-links">
+      <li><a href="#scholarships">Browse</a></li>
+      <li><a href="#apply">Apply</a></li>
+      <li><a href="#apply" class="nav-cta">Get Started</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Find scholarships that <span>actually fit you.</span></h1>
+    <p>Stop scrolling through outdated lists. Search, filter, and apply to real opportunities — all in one place.</p>
+    <div class="hero-search">
+      <input type="text" placeholder="Search by keyword, course, or country..." id="search-input" />
+      <button onclick="filterCards()">Search</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Scholarships listed</div></div>
+      <div class="stat"><div class="stat-num">₦2.4B</div><div class="stat-label">In funding available</div></div>
+      <div class="stat"><div class="stat-num">48</div><div class="stat-label">Countries covered</div></div>
+    </div>
+  </section>
+
+  <!-- FILTER + CARDS -->
+  <div class="main" id="scholarships">
+
+    <!-- FILTER SIDEBAR -->
+    <aside class="filters">
+      <h3>Filter</h3>
+
+      <div class="filter-group">
+        <label>Keyword</label>
+        <input type="text" id="filter-keyword" placeholder="e.g. Engineering" />
+      </div>
+
+      <div class="filter-group">
+        <label>Field of Study</label>
+        <select id="filter-field">
+          <option value="">All Fields</option>
+          <option>Engineering</option>
+          <option>Medicine</option>
+          <option>Business</option>
+          <option>Law</option>
+          <option>Arts & Humanities</option>
+          <option>Science & Technology</option>
+          <option>Social Sciences</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Degree Level</label>
+        <select id="filter-level">
+          <option value="">All Levels</option>
+          <option>Undergraduate</option>
+          <option>Postgraduate</option>
+          <option>PhD</option>
+          <option>Vocational</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Country</label>
+        <select id="filter-country">
+          <option value="">All Countries</option>
+          <option>Nigeria</option>
+          <option>United Kingdom</option>
+          <option>United States</option>
+          <option>Canada</option>
+          <option>Germany</option>
+          <option>Australia</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Status</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" value="Open" onchange="filterCards()"> Open</label>
+          <label><input type="checkbox" value="Closing Soon" onchange="filterCards()"> Closing Soon</label>
+          <label><input type="checkbox" value="Closed" onchange="filterCards()"> Closed</label>
+        </div>
+      </div>
+
+      <button class="filter-btn" onclick="filterCards()">Apply Filters</button>
+      <button class="reset-btn" onclick="resetFilters()">Reset</button>
+    </aside>
+
+    <!-- CARDS -->
+    <div>
+      <div class="results-header">
+        <div>
+          <h2>Scholarships</h2>
+          <p class="results-count" id="results-count">Showing 6 results</p>
+        </div>
+        <select class="sort-select" onchange="filterCards()">
+          <option>Sort: Newest</option>
+          <option>Sort: Deadline</option>
+          <option>Sort: Amount</option>
+        </select>
+      </div>
+
+      <div class="cards-grid" id="cards-grid"></div>
+    </div>
+  </div>
+
+  <!-- APPLICATION FORM -->
+  <section class="form-section" id="apply">
+    <div class="form-inner">
+      <h2>Apply for a Scholarship</h2>
+      <p>Fill in your details below and we'll match you with the best available opportunities.</p>
+
+      <div class="form-card">
+        <div class="form-divider">Personal Information</div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>First Name</label>
+            <input type="text" id="f-firstname" placeholder="e.g. Amara" />
+          </div>
+          <div class="form-field">
+            <label>Last Name</label>
+            <input type="text" id="f-lastname" placeholder="e.g. Okafor" />
+          </div>
+          <div class="form-field">
+            <label>Email Address</label>
+            <input type="email" id="f-email" placeholder="you@example.com" />
+          </div>
+          <div class="form-field">
+            <label>Phone Number</label>
+            <input type="tel" id="f-phone" placeholder="+234 800 000 0000" />
+          </div>
+          <div class="form-field">
+            <label>Date of Birth</label>
+            <input type="date" id="f-dob" />
+          </div>
+          <div class="form-field">
+            <label>Nationality</label>
+            <select id="f-nationality">
+              <option value="">Select country</option>
+              <option>Nigerian</option>
+              <option>Ghanaian</option>
+              <option>Kenyan</option>
+              <option>South African</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-divider">Academic Details</div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Current Institution</label>
+            <input type="text" id="f-school" placeholder="University / College name" />
+          </div>
+          <div class="form-field">
+            <label>Field of Study</label>
+            <select id="f-study">
+              <option value="">Select field</option>
+              <option>Engineering</option>
+              <option>Medicine</option>
+              <option>Business</option>
+              <option>Law</option>
+              <option>Arts & Humanities</option>
+              <option>Science & Technology</option>
+              <option>Social Sciences</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Degree Level</label>
+            <select id="f-level">
+              <option value="">Select level</option>
+              <option>Undergraduate</option>
+              <option>Postgraduate</option>
+              <option>PhD</option>
+              <option>Vocational</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Current GPA / Grade</label>
+            <input type="text" id="f-gpa" placeholder="e.g. 4.2 / 5.0" />
+          </div>
+          <div class="form-field full">
+            <label>Scholarship Applying For</label>
+            <select id="f-scholarship">
+              <option value="">Select scholarship</option>
+              <option>MTN Foundation Scholarship</option>
+              <option>Chevening Scholarship</option>
+              <option>DAAD Scholarship</option>
+              <option>AfDB Scholarship Programme</option>
+              <option>Commonwealth Scholarship</option>
+              <option>Mastercard Foundation Scholars</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-divider">Personal Statement</div>
+        <div class="form-grid">
+          <div class="form-field full">
+            <label>Why do you deserve this scholarship?</label>
+            <textarea id="f-statement" placeholder="Tell us about your goals, achievements, and why you're the right candidate..."></textarea>
+          </div>
+        </div>
+
+        <button class="submit-btn" onclick="submitForm()">Submit Application</button>
+        <p class="form-note">Your information is kept private and never shared without consent.</p>
+        <div id="form-success">Application submitted! We'll review your details and get back to you within 5–7 business days.</div>
+        <div id="form-error">Please fill in all required fields before submitting.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="logo">Scholar<span style="color:var(--accent)">Find</span></span>
+    <ul class="footer-links">
+      <li><a href="#scholarships">Browse Scholarships</a></li>
+      <li><a href="#apply">Apply Now</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <p>&copy; 2025 ScholarFind. Built to close the scholarship gap.</p>
+  </footer>
+
+  <script>
+    // ── SCHOLARSHIP DATA ──
+    const scholarships = [
+      {
+        org: "MTN Foundation",
+        title: "MTN Foundation Science & Technology Scholarship",
+        amount: "₦300,000",
+        field: "Science & Technology",
+        level: "Undergraduate",
+        country: "Nigeria",
+        status: "Open",
+        deadline: "Aug 30, 2025",
+        tags: ["STEM", "Nigeria", "Undergraduate"]
+      },
+      {
+        org: "UK Government",
+        title: "Chevening Scholarship – Full Funding",
+        amount: "£18,000",
+        field: "Arts & Humanities",
+        level: "Postgraduate",
+        country: "United Kingdom",
+        status: "Closing Soon",
+        deadline: "Nov 5, 2025",
+        tags: ["UK", "Postgraduate", "Leadership"]
+      },
+      {
+        org: "DAAD Germany",
+        title: "DAAD Development-Related Postgraduate Courses",
+        amount: "€850/month",
+        field: "Engineering",
+        level: "Postgraduate",
+        country: "Germany",
+        status: "Open",
+        deadline: "Oct 1, 2025",
+        tags: ["Germany", "Engineering", "Postgraduate"]
+      },
+      {
+        org: "African Dev. Bank",
+        title: "AfDB Japanese Scholarship Programme",
+        amount: "$25,000",
+        field: "Business",
+        level: "Postgraduate",
+        country: "United States",
+        status: "Closed",
+        deadline: "Mar 1, 2025",
+        tags: ["Africa", "Business", "Fully Funded"]
+      },
+      {
+        org: "Mastercard Foundation",
+        title: "Mastercard Foundation Scholars Program",
+        amount: "Full Ride",
+        field: "Social Sciences",
+        level: "Undergraduate",
+        country: "Canada",
+        status: "Open",
+        deadline: "Dec 15, 2025",
+        tags: ["Africa", "Undergraduate", "Leadership"]
+      },
+      {
+        org: "Commonwealth",
+        title: "Commonwealth Shared Scholarship",
+        amount: "Full Funding",
+        field: "Medicine",
+        level: "Postgraduate",
+        country: "United Kingdom",
+        status: "Open",
+        deadline: "Sep 20, 2025",
+        tags: ["UK", "Medicine", "Postgraduate"]
+      }
+    ];
+
+    // ── RENDER CARDS ──
+    function renderCards(data) {
+      const grid = document.getElementById("cards-grid");
+      const count = document.getElementById("results-count");
+      grid.innerHTML = "";
+
+      if (data.length === 0) {
+        grid.innerHTML = `<p style="color:var(--muted); font-size:15px; grid-column:1/-1;">No scholarships match your filters. Try adjusting your search.</p>`;
+        count.textContent = "Showing 0 results";
+        return;
+      }
+
+      count.textContent = `Showing ${data.length} result${data.length !== 1 ? "s" : ""}`;
+
+      data.forEach(s => {
+        const badgeClass = s.status === "Open" ? "badge-open" : s.status === "Closing Soon" ? "badge-closing" : "badge-closed";
+        const tags = s.tags.map(t => `<span class="tag">${t}</span>`).join("");
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-top">
+            <span class="card-org">${s.org}</span>
+            <span class="card-badge ${badgeClass}">${s.status}</span>
+          </div>
+          <h3>${s.title}</h3>
+          <div class="card-amount">${s.amount}</div>
+          <div class="card-tags">${tags}</div>
+          <div class="card-footer">
+            <span class="card-deadline">Deadline: <strong>${s.deadline}</strong></span>
+            <button class="card-apply" onclick="scrollToForm('${s.title}')">Apply</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // ── FILTER LOGIC ──
+    function filterCards() {
+      const keyword = (document.getElementById("filter-keyword").value || document.getElementById("search-input").value).toLowerCase();
+      const field = document.getElementById("filter-field").value;
+      const level = document.getElementById("filter-level").value;
+      const country = document.getElementById("filter-country").value;
+      const checked = [...document.querySelectorAll(".checkbox-group input:checked")].map(c => c.value);
+
+      let filtered = scholarships.filter(s => {
+        const matchKeyword = !keyword || s.title.toLowerCase().includes(keyword) || s.tags.some(t => t.toLowerCase().includes(keyword));
+        const matchField = !field || s.field === field;
+        const matchLevel = !level || s.level === level;
+        const matchCountry = !country || s.country === country;
+        const matchStatus = checked.length === 0 || checked.includes(s.status);
+        return matchKeyword && matchField && matchLevel && matchCountry && matchStatus;
+      });
+
+      renderCards(filtered);
+    }
+
+    // ── RESET FILTERS ──
+    function resetFilters() {
+      document.getElementById("filter-keyword").value = "";
+      document.getElementById("filter-field").value = "";
+      document.getElementById("filter-level").value = "";
+      document.getElementById("filter-country").value = "";
+      document.getElementById("search-input").value = "";
+      document.querySelectorAll(".checkbox-group input").forEach(c => c.checked = false);
+      renderCards(scholarships);
+    }
+
+    // ── SCROLL TO FORM & PREFILL ──
+    function scrollToForm(title) {
+      document.getElementById("f-scholarship").value = title;
+      document.getElementById("apply").scrollIntoView({ behavior: "smooth" });
+    }
+
+    // ── FORM SUBMISSION ──
+    function submitForm() {
+      const required = ["f-firstname", "f-lastname", "f-email", "f-school", "f-study", "f-level", "f-scholarship", "f-statement"];
+      const success = document.getElementById("form-success");
+      const error = document.getElementById("form-error");
+
+      const allFilled = required.every(id => document.getElementById(id).value.trim() !== "");
+
+      success.style.display = "none";
+      error.style.display = "none";
+
+      if (!allFilled) {
+        error.style.display = "block";
+        return;
+      }
+
+      success.style.display = "block";
+
+      // Clear form
+      required.forEach(id => document.getElementById(id).value = "");
+      ["f-phone", "f-dob", "f-nationality", "f-gpa"].forEach(id => document.getElementById(id).value = "");
+    }
+
+    // Init
+    renderCards(scholarships);
+  </script>
+
+</body>
+</html>

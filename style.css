@@ -25,7 +25,6 @@
 
     a { text-decoration: none; color: inherit; }
 
-    /* ── NAVBAR ── */
     nav {
       background: var(--primary);
       padding: 0 2rem;
@@ -69,7 +68,6 @@
       font-weight: 600 !important;
     }
 
-    /* ── HERO ── */
     .hero {
       background: var(--primary);
       color: #fff;
@@ -119,7 +117,6 @@
     .stat-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--accent); }
     .stat-label { font-size: 13px; color: #ffffffaa; }
 
-    /* ── MAIN LAYOUT ── */
     .main {
       max-width: 1200px;
       margin: 0 auto;
@@ -130,7 +127,6 @@
       align-items: start;
     }
 
-    /* ── FILTER SIDEBAR ── */
     .filters {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -204,7 +200,6 @@
       margin-top: 0.5rem;
     }
 
-    /* ── SCHOLARSHIP CARDS ── */
     .results-header {
       display: flex;
       align-items: center;
@@ -314,7 +309,6 @@
 
     .card-apply:hover { opacity: 0.85; }
 
-    /* ── APPLICATION FORM ── */
     .form-section {
       background: var(--primary);
       padding: 5rem 2rem;
@@ -421,7 +415,6 @@
       margin-top: 1rem;
     }
 
-    /* ── FOOTER ── */
     footer {
       background: #0f2419;
       color: #ffffffaa;
@@ -453,7 +446,6 @@
 
     footer p { font-size: 13px; }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .main { grid-template-columns: 1fr; }
       .filters { position: static; }
